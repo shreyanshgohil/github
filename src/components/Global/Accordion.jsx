@@ -3,7 +3,8 @@ import { Arrow } from '../svgs/svg';
 // Main accordion page
 const Accordion = (props) => {
   // Inits
-  const { gitRepo, children, index, toggleAccordionHandler } = props;
+  const { gitRepo, children, index, toggleAccordionHandler, openAccordions } =
+    props;
   const userName =
     gitRepo.owner.url.split('/')[gitRepo.owner.url.split('/').length - 1];
 
@@ -39,7 +40,7 @@ const Accordion = (props) => {
           </div>
         </div>
         <div className="accordion-arrow">
-          <Arrow />
+          <Arrow openAccordions={openAccordions} index={index} />
         </div>
       </div>
       <div className="accordion-body">{children}</div>

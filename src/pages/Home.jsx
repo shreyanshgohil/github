@@ -14,6 +14,7 @@ const Home = () => {
   const [searchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(searchParams.get('page') || 1);
   const [openAccordions, setOpenAccordions] = useState([]);
+
   const { isLoading, gitHubData } = useSelector(
     (state) => state.gitSliceReducer
   );
@@ -56,7 +57,7 @@ const Home = () => {
   return (
     <>
       <Header />
-      <div className="max-w-[1200px] mx-auto flex flex-col gap-3 py-10">
+      <main className="max-w-[1200px] mx-auto flex flex-col gap-3 py-10">
         {gitHubData.items.map((gitRepo, index) => {
           return (
             <Accordion
@@ -64,12 +65,13 @@ const Home = () => {
               key={index}
               index={index}
               toggleAccordionHandler={toggleAccordionHandler}
+              openAccordions={openAccordions}
             >
-              <AccordionBody />
+              {openAccordions.includes(index) && <AccordionBody />}
             </Accordion>
           );
         })}
-      </div>
+      </main>
       <Pagination
         totalAmount={400}
         paginationAmount={30}
