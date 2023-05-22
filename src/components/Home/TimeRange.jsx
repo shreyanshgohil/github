@@ -1,12 +1,17 @@
-import React from 'react';
-
-const TimeRange = () => {
+const TimeRange = (props) => {
+  const { dateChangeHandler, selectedInput } = props;
   return (
-    <div>
-      <select name="timeRange" id="time-range">
-        <option value="1">1 Week</option>
-        <option value="2">2 Week</option>
-        <option value="3">1 Month</option>
+    <div className="flex items-center justify-center">
+      <p className="mr-2 ">Select Time</p>
+      <select
+        name="timeRange"
+        id="timeRange"
+        onChange={dateChangeHandler}
+        value={selectedInput}
+      >
+        <option value="7">1 Week</option>
+        <option value="14">2 Week</option>
+        <option value="30">1 Month</option>
       </select>
     </div>
   );

@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Loader, Pagination, Accordion } from '../components/Global';
+import { Accordion, Loader, Pagination } from '../components/Global';
 import Header from '../components/Global/Header';
+import { AccordionBody, TimeRange } from '../components/Home';
 import { onGitDataStart } from '../store/git/gitSlice';
-import { AccordionBody } from '../components/Home';
+
+const ONE_WEEK_BEFORE_DATE = new Date(
+  new Date().setDate(new Date().getDate() - 7)
+);
 
 // Home page
 const Home = () => {
@@ -14,7 +18,8 @@ const Home = () => {
   const [searchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(searchParams.get('page') || 1);
   const [openAccordions, setOpenAccordions] = useState([]);
-
+  const [selectedDate, setSelectedDate] = useState(ONE_WEEK_BEFORE_DATE);
+  const [selectedInput, setSelectedInput] = useState(7);
   const { isLoading, gitHubData } = useSelector(
     (state) => state.gitSliceReducer
   );
@@ -35,7 +40,7 @@ const Home = () => {
   // For handle the change of page based on pagination
   const pageChangeHandler = (pageNo) => {
     setCurrentPage(pageNo);
-    dispatch(onGitDataStart(pageNo));
+    dispatch(onGitDataStart({ page: pageNo, selectedDate }));
     setOpenAccordions([]);
     navigate({
       pathname: '/',
@@ -43,10 +48,20 @@ const Home = () => {
     });
   };
 
+  //Fetch the github repos according to the date
+  const dateChangeHandler = (event) => {
+    const { value } = event.target;
+    setSelectedInput(value);
+    setSelectedDate(
+      new Date(new Date().setDate(new Date().getDate() - Number(value)))
+    );
+    dispatch(onGitDataStart({ page: currentPage, selectedDate }));
+  };
+
   // For fetch the initial page repos
   useEffect(() => {
-    dispatch(onGitDataStart(1));
-  }, [dispatch]);
+    dispatch(onGitDataStart({ page: 1, selectedDate }));
+  }, [dispatch, selectedDate]);
 
   // Loader configuration
   if (isLoading) {
@@ -57,6 +72,12 @@ const Home = () => {
   return (
     <>
       <Header />
+      <div className="text-center m-2">
+        <TimeRange
+          dateChangeHandler={dateChangeHandler}
+          selectedInput={selectedInput}
+        />
+      </div>
       <main className="max-w-[1200px] mx-auto flex flex-col gap-3 py-10">
         {gitHubData.items.map((gitRepo, index) => {
           return (
