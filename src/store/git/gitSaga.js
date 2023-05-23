@@ -3,7 +3,7 @@ import { onGitDataSuccess } from './gitSlice';
 
 // For fetch the all git repos
 function* getGitRepos({ payload }) {
-  const date = payload.selectedDate.getDay();
+  const date = payload.selectedDate.getDate();
   const month = payload.selectedDate.getMonth() + 1;
   const year = payload.selectedDate.getFullYear();
   let dd;
@@ -11,9 +11,13 @@ function* getGitRepos({ payload }) {
 
   if (date < 10) {
     dd = '0' + date;
+  } else {
+    dd = date;
   }
   if (month < 10) {
     mm = '0' + month;
+  } else {
+    mm = month;
   }
 
   try {

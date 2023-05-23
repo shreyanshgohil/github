@@ -51,17 +51,20 @@ const Home = () => {
   //Fetch the github repos according to the date
   const dateChangeHandler = (event) => {
     const { value } = event.target;
-    setSelectedInput(value);
-    setSelectedDate(
-      new Date(new Date().setDate(new Date().getDate() - Number(value)))
+    const userSelectedDate = new Date(
+      new Date().setDate(new Date().getDate() - Number(value))
     );
-    dispatch(onGitDataStart({ page: currentPage, selectedDate }));
+    setSelectedInput(value);
+    setSelectedDate(userSelectedDate);
+    dispatch(
+      onGitDataStart({ page: currentPage, selectedDate: userSelectedDate })
+    );
   };
 
   // For fetch the initial page repos
   useEffect(() => {
     dispatch(onGitDataStart({ page: 1, selectedDate }));
-  }, [dispatch, selectedDate]);
+  }, [dispatch]);
 
   // Loader configuration
   if (isLoading) {
@@ -78,7 +81,7 @@ const Home = () => {
           selectedInput={selectedInput}
         />
       </div>
-      <main className="max-w-[1200px] mx-auto flex flex-col gap-3 py-10">
+      <main className="max-w-[1200px] mx-auto flex flex-col gap-3 py-10 px-4">
         {gitHubData.items.map((gitRepo, index) => {
           return (
             <Accordion
@@ -88,7 +91,9 @@ const Home = () => {
               toggleAccordionHandler={toggleAccordionHandler}
               openAccordions={openAccordions}
             >
-              {openAccordions.includes(index) && <AccordionBody />}
+              {openAccordions.includes(index) && (
+                <AccordionBody gitRepo={gitRepo} />
+              )}
             </Accordion>
           );
         })}
